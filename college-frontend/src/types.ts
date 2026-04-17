@@ -1,3 +1,9 @@
+export interface Review {
+  user: string;
+  rating: number;
+  comment: string;
+}
+
 export interface College {
   id: number;
   name: string;
@@ -11,4 +17,5 @@ export interface College {
   category: string;
   match_score?: number;
   match_reasons?: string[];
+  reviews?: Review[];
 }

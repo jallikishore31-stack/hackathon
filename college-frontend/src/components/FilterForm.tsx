@@ -1,6 +1,8 @@
 import React from 'react';
 
 interface FilterFormProps {
+  searchQuery: string;
+  setSearchQuery: (val: string) => void;
   location: string;
   setLocation: (val: string) => void;
   maxFees: string;
@@ -16,6 +18,7 @@ interface FilterFormProps {
 }
 
 export const FilterForm: React.FC<FilterFormProps> = ({
+  searchQuery, setSearchQuery,
   location, setLocation, 
   maxFees, setMaxFees, 
   course, setCourse, 
@@ -25,6 +28,17 @@ export const FilterForm: React.FC<FilterFormProps> = ({
 }) => {
   return (
     <form onSubmit={handleSearch} className="search-form glass-panel">
+      <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+          <label>Search College</label>
+          <input
+          type="text"
+          placeholder="Search for any specific college by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input-main"
+          style={{ padding: '0.8rem', fontSize: '1.1rem', width: '100%' }}
+          />
+      </div>
       <div className="input-group">
           <label>Location</label>
           <input

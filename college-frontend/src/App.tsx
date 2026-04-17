@@ -8,6 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:5000
 
 function App() {
   const [colleges, setColleges] = useState<College[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [location, setLocation] = useState('')
   const [maxFees, setMaxFees] = useState('')
   const [userRank, setUserRank] = useState('')
@@ -57,12 +58,14 @@ function App() {
   }, [])
 
   const runSearch = async (filters?: {
+    searchQuery?: string
     location?: string
     maxFees?: string
     course?: string
     userRank?: string
     category?: string
   }) => {
+    const qSearchQuery = filters?.searchQuery ?? searchQuery
     const searchLocation = filters?.location ?? location
     const searchMaxFees = filters?.maxFees ?? maxFees
     const searchCourse = filters?.course ?? course
@@ -72,6 +75,7 @@ function App() {
     setIsLoading(true)
     try {
       const params = new URLSearchParams()
+      if (qSearchQuery) params.set('search', qSearchQuery)
       if (searchLocation) params.set('location', searchLocation)
       if (searchMaxFees) params.set('max_fees', searchMaxFees)
       if (searchCourse) params.set('course', searchCourse)
@@ -118,6 +122,7 @@ function App() {
   }
 
   const handleReset = () => {
+    setSearchQuery('')
     setLocation('')
     setMaxFees('')
     setUserRank('')
@@ -156,6 +161,7 @@ function App() {
 
       <div className="fade-in-up" style={{animationDelay: '100ms'}}>
         <FilterForm 
+          searchQuery={searchQuery} setSearchQuery={(v) => {setSearchQuery(v); setActivePreference('');}}
           location={location} setLocation={(v) => {setLocation(v); setActivePreference('');}}
           maxFees={maxFees} setMaxFees={(v) => {setMaxFees(v); setActivePreference('');}}
           course={course} setCourse={(v) => {setCourse(v); setActivePreference('');}}

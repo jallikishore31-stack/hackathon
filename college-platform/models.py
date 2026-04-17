@@ -15,6 +15,7 @@ class College(db.Model):
     category = db.Column(db.String(120), nullable=False, default='General')
     # Using String to safely store JSON across DBs (especially plain sqlite fallback) if JSON type isn't fully supported without extras, but SQLAlchemy JSON works fine in modern sqlite.
     courses = db.Column(db.JSON, nullable=False)
+    reviews = db.Column(db.JSON, nullable=True)
     source_url = db.Column(db.String(500), nullable=True)
     source_last_modified = db.Column(db.String(120), nullable=True)
     source_etag = db.Column(db.String(120), nullable=True)
@@ -33,6 +34,7 @@ class College(db.Model):
             "closing_rank": self.closing_rank,
             "category": self.category,
             "courses": self.courses,
+            "reviews": self.reviews,
             "source_url": self.source_url,
             "last_updated": self.last_updated.isoformat() if self.last_updated else None
         }

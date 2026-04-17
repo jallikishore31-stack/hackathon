@@ -11,7 +11,7 @@ def _normalize_text(value):
     return (value or '').strip().lower()
 
 
-def _score_college(college, location, max_fees, course, user_rank, category):
+def _score_college(college, location, max_fees, course, user_rank, category, search_query):
     score = 0.0
     reasons = []
 
@@ -27,6 +27,16 @@ def _score_college(college, location, max_fees, course, user_rank, category):
         elif any(token in college_location for token in normalized_location.split()):
             score += 18
             reasons.append("nearby location")
+
+    if search_query:
+        normalized_search = _normalize_text(search_query)
+        college_name = _normalize_text(college.name)
+        if normalized_search in college_name:
+            score += 150
+            reasons.append("exact name match")
+        elif any(term in college_name for term in normalized_search.split()):
+            score += 50
+            reasons.append("partial name match")
 
     if max_fees:
         try:
@@ -83,6 +93,7 @@ def ensure_schema():
         "tuition_fees": "INTEGER NOT NULL DEFAULT 0",
         "hostel_fees": "INTEGER NOT NULL DEFAULT 0",
         "category": "VARCHAR(120) NOT NULL DEFAULT 'General'",
+        "reviews": "JSON",
         "source_url": "VARCHAR(500)",
         "source_last_modified": "VARCHAR(120)",
         "source_etag": "VARCHAR(120)",
@@ -129,6 +140,7 @@ def create_app():
 
     @app.route('/search', methods=['GET'])
     def search():
+        search_query = request.args.get('search')
         location = request.args.get('location')
         # Support both legacy and frontend-friendly query keys
         max_fees = request.args.get('max_fees') or request.args.get('fees')
@@ -139,7 +151,7 @@ def create_app():
         scored_colleges = []
         for college in colleges:
             match_score, match_reasons = _score_college(
-                college, location, max_fees, course, user_rank, category
+                college, location, max_fees, course, user_rank, category, search_query
             )
             college_data = college.to_dict()
             college_data["match_score"] = match_score
@@ -155,7 +167,7 @@ def create_app():
             reverse=True
         )
 
-        if any([location, max_fees, course, user_rank, category]):
+        if any([location, max_fees, course, user_rank, category, search_query]):
             scored_colleges = [item for item in scored_colleges if item["match_score"] > 0][:30]
         else:
             scored_colleges = scored_colleges[:50]

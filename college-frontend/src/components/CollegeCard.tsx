@@ -54,6 +54,24 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank }) =
           ))}
         </ul>
       </div>
+      <div className="reviews" style={{ marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1rem' }}>
+        <strong>Student Reviews:</strong>
+        {college.reviews && college.reviews.length > 0 ? (
+          <ul style={{ listStyle: 'none', paddingLeft: 0, marginTop: '0.5rem' }}>
+            {college.reviews.map((r, i) => (
+              <li key={i} style={{ marginBottom: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '4px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{r.user}</span>
+                  <span style={{ color: '#ffd700', fontSize: '0.9rem' }}>★ {r.rating.toFixed(1)}</span>
+                </div>
+                <p style={{ margin: '0.2rem 0 0', fontSize: '0.85rem', fontStyle: 'italic', opacity: 0.9 }}>"{r.comment}"</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>No reviews available yet.</p>
+        )}
+      </div>
     </div>
   );
 };
