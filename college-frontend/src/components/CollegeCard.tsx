@@ -34,16 +34,29 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank, isC
   }
 
   return (
-    <div className="college-card">
+    <div className={`college-card ${isCompared ? 'selected-card' : ''}`} style={isCompared ? { boxShadow: '0 0 15px 4px rgba(155, 89, 182, 0.6)', borderColor: '#9b59b6', transform: 'scale(1.02)', transition: 'all 0.3s' } : { transition: 'all 0.3s' }}>
       <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
             <h2>{college.name}</h2>
             <span className="rating-badge">★ {college.rating}/5.0</span>
           </div>
-          <label className="compare-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '4px' }}>
-            <input type="checkbox" checked={isCompared} onChange={() => onCompareToggle(college.id)} />
-            Compare
-          </label>
+          <button 
+            onClick={() => onCompareToggle(college.id)} 
+            style={{ 
+              cursor: 'pointer', 
+              background: isCompared ? '#e74c3c' : '#3498db', 
+              color: '#fff', 
+              border: 'none', 
+              padding: '0.5rem 1rem', 
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              transition: 'background 0.3s',
+              flexShrink: 0,
+              marginLeft: '1rem'
+            }}
+          >
+            {isCompared ? 'Remove' : 'Add to Compare'}
+          </button>
       </div>
       <div className="card-body">
           {typeof college.match_score === 'number' && (

@@ -18,6 +18,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [compareList, setCompareList] = useState<number[]>([])
   const [showCompare, setShowCompare] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
+  const clearCompare = () => setCompareList([])
 
   const handleRefreshReviews = async (id: number) => {
     try {
@@ -35,7 +38,8 @@ function App() {
     setCompareList(prev => {
       if (prev.includes(id)) return prev.filter(x => x !== id);
       if (prev.length >= 4) {
-        alert("You can only compare up to 4 colleges!");
+        setToastMessage("Maximum 4 colleges can be compared at once.");
+        setTimeout(() => setToastMessage(''), 3000);
         return prev;
       }
       return [...prev, id];
@@ -159,6 +163,12 @@ function App() {
 
   return (
     <div className="container">
+      {/* Toast Message */}
+      {toastMessage && (
+        <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', background: '#e74c3c', color: 'white', padding: '1rem 2rem', borderRadius: '8px', zIndex: 2000, boxShadow: '0 4px 12px rgba(0,0,0,0.5)', fontWeight: 'bold', animation: 'fade-in-down 0.3s ease-out' }}>
+          {toastMessage}
+        </div>
+      )}
       <div className="grid-background"></div>
       <header className="hero-header fade-in-down">
         <h1>College Discovery Platform</h1>
@@ -226,15 +236,60 @@ function App() {
           )}
         </div>
       )}
-    {compareList.length > 0 && (
-      <button 
-        onClick={() => setShowCompare(true)}
-        className="pulse-glow"
-        style={{ position: 'fixed', bottom: '2rem', right: '2rem', padding: '1rem 2rem', background: '#ffd700', color: '#111', border: 'none', borderRadius: '50px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', zIndex: 999, boxShadow: '0 4px 15px rgba(0,0,0,0.5)' }}
-      >
-        Compare {compareList.length}/4
-      </button>
-    )}
+    {/* Floating Comparison Tray */}
+    <div 
+      style={{ 
+        position: 'fixed', 
+        bottom: compareList.length > 0 ? '0' : '-100%', 
+        left: 0, 
+        right: 0, 
+        background: 'rgba(20, 20, 35, 0.95)', 
+        backdropFilter: 'blur(10px)', 
+        borderTop: '1px solid rgba(155, 89, 182, 0.5)', 
+        padding: '1rem 2rem', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        transition: 'bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        zIndex: 900,
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.5)'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', flex: 1 }}>
+        <span style={{ color: '#fff', fontWeight: 'bold' }}>Selected ({compareList.length}/4):</span>
+        {compareList.map(id => {
+          const c = colleges.find(x => x.id === id);
+          return c ? (
+            <div key={id} style={{ background: 'rgba(155, 89, 182, 0.2)', border: '1px solid #9b59b6', borderRadius: '20px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+              <span style={{ fontSize: '0.9rem', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</span>
+              <button title="Remove college" onClick={() => toggleCompare(id)} style={{ background: 'transparent', border: 'none', color: '#e74c3c', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', padding: '0 0.2rem' }}>&times;</button>
+            </div>
+          ) : null;
+        })}
+        {compareList.length > 0 && (
+          <button onClick={clearCompare} style={{ background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem', marginLeft: '0.5rem', padding: '0.5rem' }}>Clear All 🗑️</button>
+        )}
+      </div>
+      <div style={{ marginLeft: '1rem' }}>
+        <button 
+          disabled={compareList.length < 2}
+          title={compareList.length < 2 ? "Select at least 2 colleges to compare" : "View comparison"}
+          onClick={() => setShowCompare(true)}
+          style={{ 
+            background: compareList.length >= 2 ? '#9b59b6' : '#555', 
+            color: compareList.length >= 2 ? '#fff' : '#aaa', 
+            border: 'none', 
+            padding: '0.8rem 1.5rem', 
+            borderRadius: '8px', 
+            fontWeight: 'bold', 
+            cursor: compareList.length >= 2 ? 'pointer' : 'not-allowed',
+            transition: 'all 0.2s'
+          }}
+        >
+          Compare Now ✨
+        </button>
+      </div>
+    </div>
 
     {showCompare && (
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
