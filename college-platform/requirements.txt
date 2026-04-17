@@ -1,0 +1,6 @@
+Flask
+flask-cors
+Flask-SQLAlchemy
+APScheduler
+requests
+beautifulsoup4
