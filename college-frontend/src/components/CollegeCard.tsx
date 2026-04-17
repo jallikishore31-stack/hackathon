@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { College } from '../types';
 
 interface CollegeCardProps {
   college: College;
   userRank: string;
+  isCompared: boolean;
+  onCompareToggle: (id: number) => void;
+  onRefreshReviews: (id: number) => Promise<void>;
 }
 
-export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank }) => {
+export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank, isCompared, onCompareToggle, onRefreshReviews }) => {
+  const [showReviews, setShowReviews] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await onRefreshReviews(college.id);
+    setIsRefreshing(false);
+  };
+
   const totalFees = college.fees ? college.fees.toLocaleString() : ((college.tuition_fees || 0) + (college.hostel_fees || 0)).toLocaleString();
   
   let matchMessage = "Analyzing...";
@@ -23,9 +35,15 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank }) =
 
   return (
     <div className="college-card">
-      <div className="card-header">
-          <h2>{college.name}</h2>
-          <span className="rating-badge">★ {college.rating}/5.0</span>
+      <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h2>{college.name}</h2>
+            <span className="rating-badge">★ {college.rating}/5.0</span>
+          </div>
+          <label className="compare-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', padding: '0.4rem 0.8rem', borderRadius: '4px' }}>
+            <input type="checkbox" checked={isCompared} onChange={() => onCompareToggle(college.id)} />
+            Compare
+          </label>
       </div>
       <div className="card-body">
           {typeof college.match_score === 'number' && (
@@ -55,21 +73,36 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank }) =
         </ul>
       </div>
       <div className="reviews" style={{ marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1rem' }}>
-        <strong>Student Reviews:</strong>
-        {college.reviews && college.reviews.length > 0 ? (
-          <ul style={{ listStyle: 'none', paddingLeft: 0, marginTop: '0.5rem' }}>
-            {college.reviews.map((r, i) => (
-              <li key={i} style={{ marginBottom: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '4px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{r.user}</span>
-                  <span style={{ color: '#ffd700', fontSize: '0.9rem' }}>★ {r.rating.toFixed(1)}</span>
-                </div>
-                <p style={{ margin: '0.2rem 0 0', fontSize: '0.85rem', fontStyle: 'italic', opacity: 0.9 }}>"{r.comment}"</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>No reviews available yet.</p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <strong>Student Reviews:</strong>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button onClick={handleRefresh} disabled={isRefreshing} className="search-btn" style={{ fontSize: '0.8rem', padding: '0.2rem 0.5rem' }}>
+              {isRefreshing ? 'Fetching...' : '🔄 Refresh API'}
+            </button>
+            <button onClick={() => setShowReviews(!showReviews)} className="reset-btn" style={{ fontSize: '0.8rem', padding: '0.2rem 0.5rem' }}>
+              {showReviews ? 'Hide' : 'Show'}
+            </button>
+          </div>
+        </div>
+        
+        {showReviews && (
+          <div className="fade-in-down" style={{ marginTop: '0.5rem' }}>
+            {college.reviews && college.reviews.length > 0 ? (
+              <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                {college.reviews.map((r, i) => (
+                  <li key={i} style={{ marginBottom: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem', borderRadius: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{r.user}</span>
+                      <span style={{ color: '#ffd700', fontSize: '0.9rem' }}>★ {r.rating.toFixed(1)}</span>
+                    </div>
+                    <p style={{ margin: '0.2rem 0 0', fontSize: '0.85rem', fontStyle: 'italic', opacity: 0.9 }}>"{r.comment}"</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>No reviews available yet.</p>
+            )}
+          </div>
         )}
       </div>
     </div>

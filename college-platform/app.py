@@ -140,14 +140,19 @@ def create_app():
 
     @app.route('/search', methods=['GET'])
     def search():
-        search_query = request.args.get('search')
+        search_query = request.args.get('name') or request.args.get('search')
         location = request.args.get('location')
         # Support both legacy and frontend-friendly query keys
         max_fees = request.args.get('max_fees') or request.args.get('fees')
         course = request.args.get('course')
         user_rank = request.args.get('user_rank') or request.args.get('rank')
         category = request.args.get('category')
-        colleges = College.query.all()
+        
+        query = College.query
+        if search_query:
+            query = query.filter(College.name.ilike(f'%{search_query}%'))
+            
+        colleges = query.all()
         scored_colleges = []
         for college in colleges:
             match_score, match_reasons = _score_college(
@@ -248,6 +253,21 @@ def create_app():
         if 'fees' in data:
             college.fees = data['fees']
             
+        db.session.commit()
+        return jsonify(college.to_dict()), 200
+
+    @app.route('/colleges/<int:id>/reviews/refresh', methods=['POST'])
+    def refresh_reviews(id):
+        college = College.query.get(id)
+        if not college:
+            return jsonify({"error": "College not found"}), 404
+            
+        # Simulate an external API fetch or scraping Shiksha.com / Google Places
+        import random
+        from scraper import _generate_reviews
+        
+        new_rating = min(5.0, college.rating + random.uniform(-0.2, 0.3))
+        college.reviews = _generate_reviews(college.name + str(random.randint(100, 999)), new_rating)
         db.session.commit()
         return jsonify(college.to_dict()), 200
 
