@@ -13,6 +13,7 @@ interface FilterFormProps {
   setCategory: (val: string) => void;
   userRank: string;
   setUserRank: (val: string) => void;
+  collegeNames: string[];
   handleSearch: (e?: React.FormEvent) => void;
   handleReset: () => void;
 }
@@ -24,20 +25,53 @@ export const FilterForm: React.FC<FilterFormProps> = ({
   course, setCourse, 
   category, setCategory, 
   userRank, setUserRank, 
+  collegeNames,
   handleSearch, handleReset
 }) => {
+  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const suggestions = searchQuery.length > 1 
+    ? collegeNames.filter(n => n.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 8)
+    : [];
   return (
     <form onSubmit={handleSearch} className="search-form glass-panel">
-      <div className="input-group" style={{ gridColumn: '1 / -1' }}>
+      <div className="input-group" style={{ gridColumn: '1 / -1', position: 'relative' }}>
           <label>Search College</label>
           <input
           type="text"
           placeholder="Search for any specific college by name..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {setSearchQuery(e.target.value); setShowSuggestions(true);}}
+          onFocus={() => setShowSuggestions(true)}
           className="search-input-main"
           style={{ padding: '0.8rem', fontSize: '1.1rem', width: '100%' }}
           />
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="suggestions-dropdown" style={{ 
+              position: 'absolute', 
+              top: '100%', 
+              left: 0, 
+              right: 0, 
+              background: '#1a1a2e', 
+              border: '1px solid rgba(255,255,255,0.1)', 
+              borderRadius: '0 0 8px 8px', 
+              zIndex: 100,
+              maxHeight: '200px',
+              overflowY: 'auto',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+            }}>
+              {suggestions.map((name, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => {setSearchQuery(name); setShowSuggestions(false);}}
+                  style={{ padding: '0.8rem', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.9rem' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255,255,255,0.05)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+                >
+                  {name}
+                </div>
+              ))}
+            </div>
+          )}
       </div>
       <div className="input-group">
           <label>Location</label>

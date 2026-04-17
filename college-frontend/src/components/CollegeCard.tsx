@@ -92,13 +92,23 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank, isC
         </h3>
         {college.placements ? (
           <div style={{ fontSize: '0.9rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span>Average Placement:</span>
-              <strong style={{ color: '#2ecc71' }}>{college.placements.percentage}%</strong>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+              <span>Placement Rate:</span>
+              <strong style={{ color: '#2ecc71' }}>{college.placements.placement_rate}%</strong>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <span>Highest Package:</span>
-              <strong style={{ color: '#f1c40f' }}>₹{college.placements.highest_package} LPA</strong>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '0.8rem', textAlign: 'center' }}>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '4px' }}>
+                <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>Highest</div>
+                <strong style={{ color: '#f1c40f', fontSize: '0.85rem' }}>₹{college.placements.highest_package}L</strong>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '4px' }}>
+                <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>Average</div>
+                <strong style={{ color: '#3498db', fontSize: '0.85rem' }}>₹{college.placements.avg_package}L</strong>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.05)', padding: '6px', borderRadius: '4px' }}>
+                <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>Minimum</div>
+                <strong style={{ color: '#e67e22', fontSize: '0.85rem' }}>₹{college.placements.min_package}L</strong>
+              </div>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
               <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Top Recruiters:</span>

@@ -202,6 +202,7 @@ function App() {
           course={course} setCourse={(v) => {setCourse(v); setActivePreference('');}}
           category={category} setCategory={setCategory}
           userRank={userRank} setUserRank={setUserRank}
+          collegeNames={colleges.map(c => c.name)}
           handleSearch={handleSearch}
           handleReset={handleReset}
         />

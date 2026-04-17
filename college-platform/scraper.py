@@ -67,8 +67,16 @@ def _generate_placements(name: str, rating: float) -> Dict:
     if rating > 4.8: # IIT level
         highest_package = round(80 + rnd.uniform(0, 40), 1)
 
+    avg_package = round(highest_package * rnd.uniform(0.15, 0.4), 1)
+    if rating > 4.5:
+         avg_package = round(highest_package * rnd.uniform(0.3, 0.5), 1)
+    
+    min_package = round(avg_package * rnd.uniform(0.4, 0.7), 1)
+
     return {
-        "percentage": avg_percentage,
+        "placement_rate": avg_percentage,
+        "avg_package": avg_package,
+        "min_package": min_package,
         "highest_package": highest_package,
         "top_recruiters": companies,
         "recent_highlights": f"Over {rnd.randint(150, 800)} offers made in the last session."

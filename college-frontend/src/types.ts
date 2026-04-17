@@ -19,7 +19,9 @@ export interface College {
   match_reasons?: string[];
   reviews?: Review[];
   placements?: {
-    percentage: number;
+    placement_rate: number;
+    avg_package: number;
+    min_package: number;
     highest_package: number;
     top_recruiters: string[];
     recent_highlights: string;
