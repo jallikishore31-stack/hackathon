@@ -94,6 +94,7 @@ def ensure_schema():
         "hostel_fees": "INTEGER NOT NULL DEFAULT 0",
         "category": "VARCHAR(120) NOT NULL DEFAULT 'General'",
         "reviews": "JSON",
+        "placements": "JSON",
         "source_url": "VARCHAR(500)",
         "source_last_modified": "VARCHAR(120)",
         "source_etag": "VARCHAR(120)",

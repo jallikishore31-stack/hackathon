@@ -41,12 +41,16 @@ export const FilterForm: React.FC<FilterFormProps> = ({
       </div>
       <div className="input-group">
           <label>Location</label>
-          <input
-          type="text"
-          placeholder="e.g. Mumbai, Delhi"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          />
+          <select value={location} onChange={(e) => setLocation(e.target.value)} className="category-select">
+            <option value="">All Regions</option>
+            <option value="Delhi">Delhi / NCR</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Pune">Pune</option>
+            <option value="Kolkata">Kolkata</option>
+          </select>
       </div>
       <div className="input-group">
           <label>Max Budget (₹)</label>
@@ -59,12 +63,16 @@ export const FilterForm: React.FC<FilterFormProps> = ({
       </div>
       <div className="input-group">
           <label>Course Focus</label>
-          <input
-          type="text"
-          placeholder="e.g. Computer Science"
-          value={course}
-          onChange={(e) => setCourse(e.target.value)}
-          />
+          <select value={course} onChange={(e) => setCourse(e.target.value)} className="category-select">
+            <option value="">All Courses</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Information Technology">IT</option>
+            <option value="Civil">Civil</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Chemical">Chemical</option>
+          </select>
       </div>
       <div className="input-group">
           <label>College Category</label>

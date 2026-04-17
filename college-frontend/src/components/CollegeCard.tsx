@@ -85,6 +85,38 @@ export const CollegeCard: React.FC<CollegeCardProps> = ({ college, userRank, isC
           ))}
         </ul>
       </div>
+
+      <div className="placements" style={{ marginTop: '1rem', background: 'rgba(46, 204, 113, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(46, 204, 113, 0.3)' }}>
+        <h3 style={{ margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#2ecc71' }}>
+          🎓 Placements
+        </h3>
+        {college.placements ? (
+          <div style={{ fontSize: '0.9rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span>Average Placement:</span>
+              <strong style={{ color: '#2ecc71' }}>{college.placements.percentage}%</strong>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <span>Highest Package:</span>
+              <strong style={{ color: '#f1c40f' }}>₹{college.placements.highest_package} LPA</strong>
+            </div>
+            <div style={{ marginTop: '0.5rem' }}>
+              <span style={{ fontSize: '0.8rem', color: '#aaa' }}>Top Recruiters:</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
+                {college.placements.top_recruiters.map((r, i) => (
+                  <span key={i} style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem' }}>{r}</span>
+                ))}
+              </div>
+            </div>
+            <p style={{ marginTop: '0.8rem', fontSize: '0.8rem', fontStyle: 'italic', opacity: 0.8 }}>
+              📢 {college.placements.recent_highlights}
+            </p>
+          </div>
+        ) : (
+          <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>Placement data coming soon...</p>
+        )}
+      </div>
+
       <div className="reviews" style={{ marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <strong>Student Reviews:</strong>

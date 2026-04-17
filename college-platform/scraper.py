@@ -21,7 +21,6 @@ USER_AGENT = "CollegePlatformBot/1.0 (+https://example.local)"
 
 def _default_courses() -> List[str]:
     return ["B.Tech", "M.Tech", "Ph.D"]
-
 def _generate_reviews(name: str, rating: float) -> List[Dict]:
     import random
     reviews = []
@@ -43,6 +42,37 @@ def _generate_reviews(name: str, rating: float) -> List[Dict]:
             "comment": rnd.choice(comments)
         })
     return reviews
+
+
+def _generate_placements(name: str, rating: float) -> Dict:
+    import random
+    rnd = random.Random(name + "placement")
+    
+    # Calculate more realistic placement percentage based on tier/rating
+    avg_percentage = round(80 + (rating - 3.5) * 12 + rnd.uniform(-5, 5), 1)
+    avg_percentage = min(99.5, max(65.0, avg_percentage))
+    
+    tiers = ["Google", "Microsoft", "Amazon", "NVIDIA", "Meta", "Directi", "Uber", "Goldman Sachs"]
+    mass_recruiters = ["TCS", "Infosys", "Wipro", "Accenture", "Cognizant"]
+    
+    companies = []
+    if rating > 4.5:
+        companies = rnd.sample(tiers, 3) + rnd.sample(mass_recruiters, 2)
+    elif rating > 4.0:
+        companies = rnd.sample(tiers, 1) + rnd.sample(mass_recruiters, 3)
+    else:
+        companies = rnd.sample(mass_recruiters, 4)
+        
+    highest_package = round(12 + (rating - 3.5) * 30 + rnd.uniform(-2, 5), 1)
+    if rating > 4.8: # IIT level
+        highest_package = round(80 + rnd.uniform(0, 40), 1)
+
+    return {
+        "percentage": avg_percentage,
+        "highest_package": highest_package,
+        "top_recruiters": companies,
+        "recent_highlights": f"Over {rnd.randint(150, 800)} offers made in the last session."
+    }
 
 
 def _infer_college_category(name: str) -> str:
@@ -230,6 +260,7 @@ def _normalize_records(rows: List[Dict], etag: Optional[str], last_modified: Opt
             "hostel_fees": hostel_fees,
             "rating": rating,
             "reviews": _generate_reviews(name, rating),
+            "placements": _generate_placements(name, rating),
             "closing_rank": _estimate_closing_rank(rank),
             "category": category,
             "courses": _infer_courses(name),
@@ -318,6 +349,7 @@ def scrape_colleges(app):
                     college.category = item["category"]
                     college.courses = item["courses"]
                     college.reviews = item["reviews"]
+                    college.placements = item["placements"]
                     college.source_url = item["source_url"]
                     college.source_last_modified = item["source_last_modified"]
                     college.source_etag = item["source_etag"]
@@ -335,6 +367,7 @@ def scrape_colleges(app):
                         category=item["category"],
                         courses=item["courses"],
                         reviews=item["reviews"],
+                        placements=item["placements"],
                         source_url=item["source_url"],
                         source_last_modified=item["source_last_modified"],
                         source_etag=item["source_etag"],

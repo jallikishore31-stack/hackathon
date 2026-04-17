@@ -18,4 +18,10 @@ export interface College {
   match_score?: number;
   match_reasons?: string[];
   reviews?: Review[];
+  placements?: {
+    percentage: number;
+    highest_package: number;
+    top_recruiters: string[];
+    recent_highlights: string;
+  };
 }
