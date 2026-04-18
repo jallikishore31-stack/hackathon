@@ -133,6 +133,9 @@ def create_app():
             scrape_colleges(app)
 
     # ----------- REST API Endpoints -----------
+    @app.route('/', methods=['GET'])
+    def index():
+        return jsonify({"message": "College Platform API is Running", "endpoints": ["/colleges", "/search"]}), 200
 
     @app.route('/colleges', methods=['GET'])
     def get_colleges():
