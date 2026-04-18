@@ -1,10 +1,12 @@
 import os
+import random
+import logging
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from extensions import db
 from models import College, SyncState
 from scheduler import start_scheduler
-from scraper import scrape_colleges
+from scraper import scrape_colleges, _generate_reviews
 
 
 def _normalize_text(value):
@@ -267,13 +269,15 @@ def create_app():
             return jsonify({"error": "College not found"}), 404
             
         # Simulate an external API fetch or scraping Shiksha.com / Google Places
-        import random
-        from scraper import _generate_reviews
-        
         new_rating = min(5.0, college.rating + random.uniform(-0.2, 0.3))
         college.reviews = _generate_reviews(college.name + str(random.randint(100, 999)), new_rating)
         db.session.commit()
         return jsonify(college.to_dict()), 200
+
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        logging.error(f"Server Error: {str(e)}")
+        return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
     return app
 
