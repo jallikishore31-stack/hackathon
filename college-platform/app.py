@@ -114,7 +114,7 @@ def ensure_schema():
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)  # enable CORS for frontend integration
+    CORS(app, resources={r"/*": {"origins": "*"}})  # enable CORS for frontend integration
     
     # Configure database (override with DATABASE_URL when needed)
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///colleges.db')
