@@ -4,3 +4,4 @@ Flask-SQLAlchemy
 APScheduler
 requests
 beautifulsoup4
+gunicorn
