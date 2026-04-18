@@ -4,7 +4,7 @@ import type { College } from './types'
 import { CollegeCard } from './components/CollegeCard'
 import { FilterForm } from './components/FilterForm'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:5000'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://vethuko-college.onrender.com'
 
 function App() {
   const [colleges, setColleges] = useState<College[]>([])
@@ -31,7 +31,7 @@ function App() {
         setColleges(prev => prev.map(c => c.id === id ? updated : c))
         setAllColleges(prev => prev.map(c => c.id === id ? updated : c))
       }
-    } catch(err) {
+    } catch (err) {
       console.error('Failed to refresh reviews:', err)
     }
   }
@@ -178,32 +178,32 @@ function App() {
         <h1>College Discovery Platform</h1>
         <p className="subtitle">Discover the perfect college matching your rank, fees, and location.</p>
       </header>
-      
+
       <div className="preferences-bar fade-in-up">
         <span>Quick Modes:</span>
-        <button 
+        <button
           className={`pref-btn ${activePreference === 'Budget Friendly' ? 'active' : ''}`}
           onClick={() => handlePreference('Budget Friendly')}>
           💸 Budget Friendly (&lt;1.5L)
         </button>
-        <button 
+        <button
           className={`pref-btn ${activePreference === 'Tech Hubs' ? 'active' : ''}`}
           onClick={() => handlePreference('Tech Hubs')}>
           💻 Tech Hubs
         </button>
-        <button 
+        <button
           className={`pref-btn ${activePreference === 'Premium Quality' ? 'active' : ''}`}
           onClick={() => handlePreference('Premium Quality')}>
           🌟 Premium Institutes
         </button>
       </div>
 
-      <div className="fade-in-up" style={{animationDelay: '100ms'}}>
-        <FilterForm 
-          searchQuery={searchQuery} setSearchQuery={(v) => {setSearchQuery(v); setActivePreference('');}}
-          location={location} setLocation={(v) => {setLocation(v); setActivePreference('');}}
-          maxFees={maxFees} setMaxFees={(v) => {setMaxFees(v); setActivePreference('');}}
-          course={course} setCourse={(v) => {setCourse(v); setActivePreference('');}}
+      <div className="fade-in-up" style={{ animationDelay: '100ms' }}>
+        <FilterForm
+          searchQuery={searchQuery} setSearchQuery={(v) => { setSearchQuery(v); setActivePreference(''); }}
+          location={location} setLocation={(v) => { setLocation(v); setActivePreference(''); }}
+          maxFees={maxFees} setMaxFees={(v) => { setMaxFees(v); setActivePreference(''); }}
+          course={course} setCourse={(v) => { setCourse(v); setActivePreference(''); }}
           category={category} setCategory={setCategory}
           userRank={userRank} setUserRank={setUserRank}
           collegeNames={colleges.map(c => c.name)}
@@ -218,13 +218,13 @@ function App() {
           <p>Running Smart Match Algorithm...</p>
         </div>
       ) : (
-        <div className="college-list fade-in-up" style={{animationDelay: '200ms'}}>
+        <div className="college-list fade-in-up" style={{ animationDelay: '200ms' }}>
           {colleges.length > 0 ? (
             colleges.map((college, idx) => (
-              <div style={{animationDelay: `${idx * 50 + 200}ms`}} className="card-wrapper" key={college.id}>
-                <CollegeCard 
-                  college={college} 
-                  userRank={userRank} 
+              <div style={{ animationDelay: `${idx * 50 + 200}ms` }} className="card-wrapper" key={college.id}>
+                <CollegeCard
+                  college={college}
+                  userRank={userRank}
                   isCompared={compareList.includes(college.id)}
                   onCompareToggle={toggleCompare}
                   onRefreshReviews={handleRefreshReviews}
@@ -233,129 +233,129 @@ function App() {
             ))
           ) : (
             <div className="empty-state glass-panel">
-                <div className="empty-icon">🏜️</div>
-                <h3>No Matches Found</h3>
-                <p>Try adapting your budget, location, or rank preferences.</p>
-                <button onClick={handleReset} className="search-btn mt-4">Reset Filters</button>
+              <div className="empty-icon">🏜️</div>
+              <h3>No Matches Found</h3>
+              <p>Try adapting your budget, location, or rank preferences.</p>
+              <button onClick={handleReset} className="search-btn mt-4">Reset Filters</button>
             </div>
           )}
         </div>
       )}
-    {/* Floating Comparison Tray */}
-    <div 
-      style={{ 
-        position: 'fixed', 
-        bottom: compareList.length > 0 ? '0' : '-100%', 
-        left: 0, 
-        right: 0, 
-        background: 'rgba(20, 20, 35, 0.95)', 
-        backdropFilter: 'blur(10px)', 
-        borderTop: '1px solid rgba(155, 89, 182, 0.5)', 
-        padding: '1rem 2rem', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between',
-        transition: 'bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-        zIndex: 900,
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.5)'
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', flex: 1 }}>
-        <span style={{ color: '#fff', fontWeight: 'bold' }}>Selected ({compareList.length}/4):</span>
-        {compareList.map(id => {
-          const c = allColleges.find(x => x.id === id);
-          return c ? (
-            <div key={id} style={{ background: 'rgba(155, 89, 182, 0.2)', border: '1px solid #9b59b6', borderRadius: '20px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
-              <span style={{ fontSize: '0.9rem', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</span>
-              <button title="Remove college" onClick={(e) => {e.stopPropagation(); toggleCompare(id);}} style={{ background: 'transparent', border: 'none', color: '#e74c3c', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', padding: '0 0.2rem' }}>&times;</button>
-            </div>
-          ) : null;
-        })}
-        {compareList.length > 0 && (
-          <button onClick={clearCompare} style={{ background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem', marginLeft: '0.5rem', padding: '0.5rem' }}>Clear All 🗑️</button>
-        )}
-      </div>
-      <div style={{ marginLeft: '1rem' }}>
-        <button 
-          disabled={compareList.length < 2}
-          title={compareList.length < 2 ? "Select at least 2 colleges to compare" : "View comparison"}
-          onClick={() => setShowCompare(true)}
-          style={{ 
-            background: compareList.length >= 2 ? '#9b59b6' : '#555', 
-            color: compareList.length >= 2 ? '#fff' : '#aaa', 
-            border: 'none', 
-            padding: '0.8rem 1.5rem', 
-            borderRadius: '8px', 
-            fontWeight: 'bold', 
-            cursor: compareList.length >= 2 ? 'pointer' : 'not-allowed',
-            transition: 'all 0.2s'
-          }}
-        >
-          Compare Now ✨
-        </button>
-      </div>
-    </div>
-
-    {showCompare && (
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-        <div style={{ background: '#1a1a2e', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '1200px', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#fff', fontSize: '2rem', margin: 0 }}>Comparison & Priority List</h2>
-            <button onClick={() => setShowCompare(false)} style={{ background: 'transparent', color: '#fff', border: 'none', fontSize: '2rem', cursor: 'pointer' }}>&times;</button>
-          </div>
-          
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: 'left', padding: '1rem', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>Feature</th>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map((college, idx) => (
-                    <th key={college.id} style={{ textAlign: 'left', padding: '1rem', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
-                      <div style={{ fontSize: '1.2rem', color: idx === 0 ? '#ffd700' : '#fff' }}>{idx === 0 && '🏆 '}{college.name}</div>
-                      <div style={{ fontSize: '0.9rem', color: '#888', fontWeight: 'normal' }}>Rank #{idx + 1} Priority</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Match Score</td>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map(college => (
-                    <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.match_score ? `${college.match_score.toFixed(1)}%` : 'N/A'}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Rating</td>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map(college => (
-                    <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>★ {college.rating}/5.0</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Fees (Total)</td>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map(college => (
-                    <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>₹{college.fees ? college.fees.toLocaleString() : ((college.tuition_fees || 0) + (college.hostel_fees || 0)).toLocaleString()}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Closing Rank</td>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map(college => (
-                    <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.closing_rank ? college.closing_rank.toLocaleString() : 'N/A'}</td>
-                  ))}
-                </tr>
-                <tr>
-                  <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Location</td>
-                  {[...allColleges.filter(c => compareList.includes(c.id))].sort((a,b) => (b.match_score||0) - (a.match_score||0) || b.rating - a.rating).map(college => (
-                    <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.location}</td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      {/* Floating Comparison Tray */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: compareList.length > 0 ? '0' : '-100%',
+          left: 0,
+          right: 0,
+          background: 'rgba(20, 20, 35, 0.95)',
+          backdropFilter: 'blur(10px)',
+          borderTop: '1px solid rgba(155, 89, 182, 0.5)',
+          padding: '1rem 2rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          transition: 'bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+          zIndex: 900,
+          boxShadow: '0 -4px 20px rgba(0,0,0,0.5)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', flex: 1 }}>
+          <span style={{ color: '#fff', fontWeight: 'bold' }}>Selected ({compareList.length}/4):</span>
+          {compareList.map(id => {
+            const c = allColleges.find(x => x.id === id);
+            return c ? (
+              <div key={id} style={{ background: 'rgba(155, 89, 182, 0.2)', border: '1px solid #9b59b6', borderRadius: '20px', padding: '0.3rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+                <span style={{ fontSize: '0.9rem', maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{c.name}</span>
+                <button title="Remove college" onClick={(e) => { e.stopPropagation(); toggleCompare(id); }} style={{ background: 'transparent', border: 'none', color: '#e74c3c', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem', padding: '0 0.2rem' }}>&times;</button>
+              </div>
+            ) : null;
+          })}
+          {compareList.length > 0 && (
+            <button onClick={clearCompare} style={{ background: 'transparent', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: '0.9rem', marginLeft: '0.5rem', padding: '0.5rem' }}>Clear All 🗑️</button>
+          )}
+        </div>
+        <div style={{ marginLeft: '1rem' }}>
+          <button
+            disabled={compareList.length < 2}
+            title={compareList.length < 2 ? "Select at least 2 colleges to compare" : "View comparison"}
+            onClick={() => setShowCompare(true)}
+            style={{
+              background: compareList.length >= 2 ? '#9b59b6' : '#555',
+              color: compareList.length >= 2 ? '#fff' : '#aaa',
+              border: 'none',
+              padding: '0.8rem 1.5rem',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: compareList.length >= 2 ? 'pointer' : 'not-allowed',
+              transition: 'all 0.2s'
+            }}
+          >
+            Compare Now ✨
+          </button>
         </div>
       </div>
-    )}
-  </div>
-)
+
+      {showCompare && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+          <div style={{ background: '#1a1a2e', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '1200px', maxHeight: '90vh', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+              <h2 style={{ color: '#fff', fontSize: '2rem', margin: 0 }}>Comparison & Priority List</h2>
+              <button onClick={() => setShowCompare(false)} style={{ background: 'transparent', color: '#fff', border: 'none', fontSize: '2rem', cursor: 'pointer' }}>&times;</button>
+            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff' }}>
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left', padding: '1rem', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>Feature</th>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map((college, idx) => (
+                      <th key={college.id} style={{ textAlign: 'left', padding: '1rem', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
+                        <div style={{ fontSize: '1.2rem', color: idx === 0 ? '#ffd700' : '#fff' }}>{idx === 0 && '🏆 '}{college.name}</div>
+                        <div style={{ fontSize: '0.9rem', color: '#888', fontWeight: 'normal' }}>Rank #{idx + 1} Priority</div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Match Score</td>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map(college => (
+                      <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.match_score ? `${college.match_score.toFixed(1)}%` : 'N/A'}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Rating</td>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map(college => (
+                      <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>★ {college.rating}/5.0</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Fees (Total)</td>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map(college => (
+                      <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>₹{college.fees ? college.fees.toLocaleString() : ((college.tuition_fees || 0) + (college.hostel_fees || 0)).toLocaleString()}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Closing Rank</td>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map(college => (
+                      <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.closing_rank ? college.closing_rank.toLocaleString() : 'N/A'}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>Location</td>
+                    {[...allColleges.filter(c => compareList.includes(c.id))].sort((a, b) => (b.match_score || 0) - (a.match_score || 0) || b.rating - a.rating).map(college => (
+                      <td key={college.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{college.location}</td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default App
